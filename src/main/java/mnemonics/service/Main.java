@@ -3,9 +3,9 @@ package mnemonics.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.FileHandler;
-import java.util.logging.Formatter;
-import java.util.logging.LogRecord;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class Main {
 
@@ -14,8 +14,9 @@ public class Main {
 	public static void main(String[] args) {
 
 		initLogger();
-
-		MnemonicGenerator.main(args);
+		System.setProperty("java.util.logging.SimpleFormatter.format", "%5$s%6$s%n");
+		String[] args2 = { "A,a,p,f,l,B,b,i,r,n,C,c,l,m,n,t,i,n", "Apfel,Birne,Clementine" };
+		mnemonic(args2);
 	}
 
 	private static void initLogger() {
@@ -24,23 +25,10 @@ public class Main {
 			FileHandler fh;
 			fh = new FileHandler("Log.log");
 			logger.addHandler(fh);
-			fh.setFormatter(new MyCustomFormatter());
+			fh.setFormatter(new SimpleFormatter());
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-	}
-
-	private static class MyCustomFormatter extends Formatter {
-
-		@Override
-		public String format(LogRecord record) {
-
-			StringBuffer sb = new StringBuffer();
-			sb.append(record.getMessage());
-			sb.append("\n");
-			return sb.toString();
-		}
-
 	}
 
 	public static void mnemonic(String[] args) {
@@ -67,48 +55,42 @@ public class Main {
 			lWoerter.add(new Wort(pWort, lVergebeneBuchstaben));
 		}
 
-		logger.info("Vergebene Buchstaben: ");
-		logger.info(lVergebeneBuchstaben.toString());
+		logger.log(Level.INFO, "Vergebene Buchstaben: {0}", lVergebeneBuchstaben);
+		logger.log(Level.INFO, "");
 
 		int lCount = 0;
 		boolean found = false;
 		while (!found && lCount < lWoerter.size()) {
-			logger.info(Integer.toString(lCount));
-			logger.info(" Wörter entfernt");
+			logger.log(Level.INFO, "{0} Wort(e) entfernt", Integer.toString(lCount));
+			logger.log(Level.INFO, "");
 			found = solveOhneWoerter(lWoerter, lCount, found);
 			lCount++;
 		}
 
 	}
 
-	private static boolean solveOhneWoerter(List<Wort> pWoerter, int pI, boolean pFound) {
+	private static boolean solveOhneWoerter(List<Wort> pWoerter, int pKuerzeListeUm, boolean pFound) {
 
-		if (pI == 0) {
+		if (pKuerzeListeUm == 0) {
 
 			ArrayList<Loesung> lLoesungen = solve(pWoerter);
 			if (!lLoesungen.isEmpty()) {
 				pFound = true;
-				logger.info("Anzahl Lösungen: ");
-				logger.info(Integer.toString(lLoesungen.size()));
-				logger.info("Begin Lösungen");
+				logger.log(Level.INFO, "Anzahl Lösungen: {0}", Integer.toString(lLoesungen.size()));
 				for (Loesung lLoesung : lLoesungen) {
-					logger.info(lLoesung.toString());
+					logger.log(Level.INFO, "{0}", lLoesung);
 				}
-				logger.info("Ende Lösungen");
-			}
 
-		} else if (pI == 1) {
-
-			ArrayList<List<Wort>> lGekuerzteListen = kuerzeListeUm(pWoerter, 1);
-			for (List<Wort> lGekuerzteList : lGekuerzteListen) {
-				pFound = solveOhneWoerter(lGekuerzteList, 0, pFound);
+			} else {
+				logger.log(Level.INFO, "Keine Lösungen");
 			}
+			logger.log(Level.INFO, "");
 
 		} else {
 
-			ArrayList<List<Wort>> lGekuerzteListen = kuerzeListeUm(pWoerter, 1);
+			ArrayList<List<Wort>> lGekuerzteListen = erzeugeWortListenMitEinemWortWeniger(pWoerter);
 			for (List<Wort> lGekuerzteList : lGekuerzteListen) {
-				pFound = solveOhneWoerter(lGekuerzteList, pI - 1, pFound);
+				pFound = solveOhneWoerter(lGekuerzteList, pKuerzeListeUm - 1, pFound);
 			}
 
 		}
@@ -116,25 +98,22 @@ public class Main {
 		return pFound;
 	}
 
-	private static ArrayList<List<Wort>> kuerzeListeUm(List<Wort> pWoerter, int pI) {
+	private static ArrayList<List<Wort>> erzeugeWortListenMitEinemWortWeniger(List<Wort> pWoerter) {
 
 		ArrayList<List<Wort>> lGekuerzteListen = new ArrayList<>();
 
-		if (pI == 1) {
-
-			for (int lI = 0; lI < pWoerter.size(); lI++) {
-				if (lI == 0) {
-					lGekuerzteListen.add(pWoerter.subList(1, pWoerter.size()));
-				} else if (lI == pWoerter.size()) {
-					lGekuerzteListen.add(pWoerter.subList(0, pWoerter.size() - 1));
-				} else {
-					List<Wort> lSubListA = pWoerter.subList(0, lI);
-					List<Wort> lSubListB = pWoerter.subList(lI + 1, pWoerter.size());
-					List<Wort> lSubListC = new ArrayList<>();
-					lSubListC.addAll(lSubListA);
-					lSubListC.addAll(lSubListB);
-					lGekuerzteListen.add(lSubListC);
-				}
+		for (int lI = 0; lI < pWoerter.size(); lI++) {
+			if (lI == 0) {
+				lGekuerzteListen.add(pWoerter.subList(1, pWoerter.size()));
+			} else if (lI == pWoerter.size()) {
+				lGekuerzteListen.add(pWoerter.subList(0, pWoerter.size() - 1));
+			} else {
+				List<Wort> lSubListA = pWoerter.subList(0, lI);
+				List<Wort> lSubListB = pWoerter.subList(lI + 1, pWoerter.size());
+				List<Wort> lSubListC = new ArrayList<>();
+				lSubListC.addAll(lSubListA);
+				lSubListC.addAll(lSubListB);
+				lGekuerzteListen.add(lSubListC);
 			}
 		}
 		return lGekuerzteListen;

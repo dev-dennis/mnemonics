@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Wort {
+
+	static Logger logger = Logger.getLogger("MyLog");
 
 	private String mWort;
 	private ArrayList<Character> mVergebeneBuchstaben;
@@ -14,14 +18,7 @@ public class Wort {
 
 		setVergebeneBuchstaben(pVergebeneBuchstaben);
 		setWort(pWort);
-
-		StringBuilder sb = new StringBuilder();
-		sb.append("Wort: ");
-		sb.append(getWort());
-		sb.append(", Buchstaben: ");
-		sb.append(getErlaubteBUchstaben());
-
-		System.out.println(sb.toString());
+		logger.log(Level.INFO, "Wort: {0}, Buchstaben: {1}", new String[] { getWort(), getErlaubteBUchstaben() });
 	}
 
 	public String getWort() {
@@ -79,5 +76,11 @@ public class Wort {
 	private void setVergebeneBuchstaben(List<Character> pVergebeneBuchstaben) {
 
 		mVergebeneBuchstaben = (ArrayList<Character>) pVergebeneBuchstaben;
+	}
+
+	@Override
+	public String toString() {
+
+		return getWort() + "," + getErlaubteBUchstaben();
 	}
 }

@@ -1,9 +1,8 @@
 package mnemonics.service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Mnemonic {
 
@@ -45,16 +44,7 @@ public class Mnemonic {
 
 	public static List<Mnemonic> getAll(Wort pWort) {
 
-		Set<Character> charSet = new HashSet<>();
-		for (Character c : pWort.getErlaubteBUchstaben().toCharArray()) {
-			charSet.add(c);
-		}
-
-		List<Mnemonic> lMnemonics = new ArrayList<>();
-		for (Character character : charSet) {
-			lMnemonics.add(new Mnemonic(pWort, character));
-		}
-
-		return lMnemonics;
+		Set<Character> chars = pWort.getErlaubteBUchstaben().chars().mapToObj(c -> (char) c).collect(Collectors.toSet());
+		return chars.stream().map(c -> new Mnemonic(pWort, c)).toList();
 	}
 }
