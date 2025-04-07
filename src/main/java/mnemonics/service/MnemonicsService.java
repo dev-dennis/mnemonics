@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import mnemonics.model.Word;
+
 public class MnemonicsService {
 
 	private MnemonicsService() {
@@ -16,7 +18,7 @@ public class MnemonicsService {
 	public static void mnemonic(String[] args) {
 
 		if (args.length != 2) {
-			logger.info("Erwartet: a,b,c Apfel,Birne,Clementine");
+			logger.info("Erwartet: abc Apfel,Birne,Clementine");
 			return;
 		}
 
@@ -26,7 +28,7 @@ public class MnemonicsService {
 			if (lString.length() == 1) {
 				lVergebeneBuchstaben.add(lString.charAt(0));
 			} else {
-				logger.info("Erwartet: a,b,c");
+				logger.info("Erwartet: abc");
 				return;
 			}
 		}
@@ -70,7 +72,7 @@ public class MnemonicsService {
 
 		} else {
 
-			ArrayList<List<Word>> lGekuerzteListen = erzeugeWortListenMitEinemWortWeniger(pWoerter);
+			ArrayList<List<Word>> lGekuerzteListen = getReducedListPermutations(pWoerter);
 			for (List<Word> lGekuerzteList : lGekuerzteListen) {
 				pFound = findeLoesungen(lGekuerzteList, pKuerzeListeUm - 1, pFound);
 			}
@@ -78,27 +80,6 @@ public class MnemonicsService {
 		}
 
 		return pFound;
-	}
-
-	static ArrayList<List<Word>> erzeugeWortListenMitEinemWortWeniger(List<Word> pWoerter) {
-
-		ArrayList<List<Word>> lGekuerzteListen = new ArrayList<>();
-
-		for (int i = 0; i < pWoerter.size(); i++) {
-			if (i == 0) {
-				lGekuerzteListen.add(pWoerter.subList(1, pWoerter.size()));
-			} else if (i == pWoerter.size()) {
-				lGekuerzteListen.add(pWoerter.subList(0, pWoerter.size() - 1));
-			} else {
-				List<Word> lSubListA = pWoerter.subList(0, i);
-				List<Word> lSubListB = pWoerter.subList(i + 1, pWoerter.size());
-				List<Word> lSubListC = new ArrayList<>();
-				lSubListC.addAll(lSubListA);
-				lSubListC.addAll(lSubListB);
-				lGekuerzteListen.add(lSubListC);
-			}
-		}
-		return lGekuerzteListen;
 	}
 
 	static ArrayList<List<Word>> getReducedListPermutations(List<Word> words) {

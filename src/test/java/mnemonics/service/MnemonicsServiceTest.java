@@ -8,6 +8,8 @@ import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import mnemonics.model.Word;
+
 class MnemonicsServiceTest {
 
 	private static final Character A = Character.valueOf('A');

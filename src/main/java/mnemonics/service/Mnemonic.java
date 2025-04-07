@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import mnemonics.model.Word;
+
 public class Mnemonic {
 
 	private Word mWort;
@@ -39,12 +41,12 @@ public class Mnemonic {
 	@Override
 	public String toString() {
 
-		return getWort().getWort() + "," + getBuchstabe();
+		return getWort().getText() + "," + getBuchstabe();
 	}
 
-	public static List<Mnemonic> getAll(Word pWort) {
+	public static List<Mnemonic> getAll(Word word) {
 
-		Set<Character> chars = pWort.getErlaubteBuchstaben().chars().mapToObj(c -> (char) c).collect(Collectors.toSet());
-		return chars.stream().map(c -> new Mnemonic(pWort, c)).toList();
+		Set<Character> chars = word.getAllowedCharacters();
+		return chars.stream().map(c -> new Mnemonic(word, c)).toList();
 	}
 }
