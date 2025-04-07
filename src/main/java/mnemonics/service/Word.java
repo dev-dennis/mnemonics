@@ -7,18 +7,18 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Wort {
+public class Word {
 
 	static Logger logger = Logger.getLogger("MyLog");
 
 	private String mWort;
 	private ArrayList<Character> mVergebeneBuchstaben;
 
-	public Wort(String pWort, List<Character> pVergebeneBuchstaben) {
+	public Word(String pWort, List<Character> pVergebeneBuchstaben) {
 
-		setVergebeneBuchstaben(pVergebeneBuchstaben);
 		setWort(pWort);
-		logger.log(Level.INFO, "Wort: {0}, Buchstaben: {1}", new String[] { getWort(), getErlaubteBUchstaben() });
+		setVergebeneBuchstaben(pVergebeneBuchstaben);
+		logger.log(Level.INFO, "Wort: {0}, Buchstaben: {1}", new String[] { getWort(), getErlaubteBuchstaben() });
 	}
 
 	public String getWort() {
@@ -51,7 +51,7 @@ public class Wort {
 		return sb.toString();
 	}
 
-	public String getErlaubteBUchstaben() {
+	public String getErlaubteBuchstaben() {
 
 		char[] lChars = getBuchstaben().toCharArray();
 		Set<Character> charSet = new LinkedHashSet<>();
@@ -81,6 +81,6 @@ public class Wort {
 	@Override
 	public String toString() {
 
-		return getWort() + "," + getErlaubteBUchstaben();
+		return getWort() + "," + getErlaubteBuchstaben();
 	}
 }

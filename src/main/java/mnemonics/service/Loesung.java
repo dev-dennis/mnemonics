@@ -47,7 +47,7 @@ public class Loesung {
 
 	boolean isValid() {
 
-		Set<Wort> lWoerter = new HashSet<>();
+		Set<Word> lWoerter = new HashSet<>();
 		Set<Character> lBuchstaben = new HashSet<>();
 		for (Mnemonic lMnemonic : getMnemonics()) {
 			lWoerter.add(lMnemonic.getWort());

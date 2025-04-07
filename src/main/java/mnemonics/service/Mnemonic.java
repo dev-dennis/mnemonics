@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 public class Mnemonic {
 
-	private Wort mWort;
+	private Word mWort;
 
 	private Character mBuchstabe;
 
@@ -20,17 +20,17 @@ public class Mnemonic {
 		this.mBuchstabe = mBuchstabe;
 	}
 
-	public Wort getWort() {
+	public Word getWort() {
 
 		return mWort;
 	}
 
-	private void setWort(Wort pWort) {
+	private void setWort(Word pWort) {
 
 		this.mWort = pWort;
 	}
 
-	public Mnemonic(Wort pWort, Character pBuchstabe) {
+	public Mnemonic(Word pWort, Character pBuchstabe) {
 
 		setWort(pWort);
 		setBuchstabe(pBuchstabe);
@@ -42,9 +42,9 @@ public class Mnemonic {
 		return getWort().getWort() + "," + getBuchstabe();
 	}
 
-	public static List<Mnemonic> getAll(Wort pWort) {
+	public static List<Mnemonic> getAll(Word pWort) {
 
-		Set<Character> chars = pWort.getErlaubteBUchstaben().chars().mapToObj(c -> (char) c).collect(Collectors.toSet());
+		Set<Character> chars = pWort.getErlaubteBuchstaben().chars().mapToObj(c -> (char) c).collect(Collectors.toSet());
 		return chars.stream().map(c -> new Mnemonic(pWort, c)).toList();
 	}
 }
