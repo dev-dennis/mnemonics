@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import mnemonics.model.Mnemonic;
+import mnemonics.model.Solution;
 import mnemonics.model.Word;
 
 public class MnemonicsService {
@@ -57,11 +59,11 @@ public class MnemonicsService {
 
 		if (pKuerzeListeUm == 0) {
 
-			ArrayList<Loesung> lLoesungen = erzeugeAlleGueltigenMnemonics(pWoerter);
+			ArrayList<Solution> lLoesungen = erzeugeAlleGueltigenMnemonics(pWoerter);
 			if (!lLoesungen.isEmpty()) {
 				pFound = true;
 				logger.log(Level.INFO, "Anzahl Lösungen: {0}", Integer.toString(lLoesungen.size()));
-				for (Loesung lLoesung : lLoesungen) {
+				for (Solution lLoesung : lLoesungen) {
 					logger.log(Level.INFO, "{0}", lLoesung);
 				}
 
@@ -93,23 +95,23 @@ public class MnemonicsService {
 		return reducedLists;
 	}
 
-	private static ArrayList<Loesung> erzeugeAlleGueltigenMnemonics(List<Word> pWoerter) {
+	private static ArrayList<Solution> erzeugeAlleGueltigenMnemonics(List<Word> pWoerter) {
 
-		ArrayList<Loesung> lLoesungen = new ArrayList<>();
+		ArrayList<Solution> lLoesungen = new ArrayList<>();
 
 		if (pWoerter.isEmpty()) {
 			return new ArrayList<>();
 		} else if (pWoerter.size() == 1) {
-			List<Mnemonic> lMnemonics = Mnemonic.getAll(pWoerter.get(0));
-			for (Mnemonic lMnemonic : lMnemonics) {
-				lLoesungen.add(new Loesung(lMnemonic));
+			List<Mnemonic> mnemonics = Mnemonic.getAll(pWoerter.get(0));
+			for (Mnemonic mnemonic : mnemonics) {
+				lLoesungen.add(new Solution(mnemonic));
 			}
 		} else {
-			ArrayList<Loesung> lLoesungen1 = erzeugeAlleGueltigenMnemonics(pWoerter.subList(0, (pWoerter.size() + 1) / 2));
-			ArrayList<Loesung> lLoesungen2 = erzeugeAlleGueltigenMnemonics(pWoerter.subList((pWoerter.size() + 1) / 2, pWoerter.size()));
-			for (Loesung loesung1 : lLoesungen1) {
-				for (Loesung loesung2 : lLoesungen2) {
-					Loesung loesung = new Loesung(loesung1, loesung2);
+			ArrayList<Solution> lLoesungen1 = erzeugeAlleGueltigenMnemonics(pWoerter.subList(0, (pWoerter.size() + 1) / 2));
+			ArrayList<Solution> lLoesungen2 = erzeugeAlleGueltigenMnemonics(pWoerter.subList((pWoerter.size() + 1) / 2, pWoerter.size()));
+			for (Solution loesung1 : lLoesungen1) {
+				for (Solution loesung2 : lLoesungen2) {
+					Solution loesung = new Solution(loesung1, loesung2);
 					if (loesung.isValid()) {
 						lLoesungen.add(loesung);
 					}

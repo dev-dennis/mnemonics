@@ -8,25 +8,19 @@ import org.junit.jupiter.api.Test;
 
 class WordTest {
 
-	private static final Character A = Character.valueOf('a');
-	private static final Character B = Character.valueOf('b');
-	private static final Character C = Character.valueOf('c');
+	private static final Character A = Character.valueOf('A');
+	private static final Character LOWERB = Character.valueOf('b');
+	private static final Character LOWERC = Character.valueOf('c');
 
-	private static final List<Character> forbiddenCharacters = List.of(A, C);
-	private static final Set<Character> expectedAllowedCharacters = Set.of(B);
+	private static final List<Character> forbiddenCharacters = List.of(A, LOWERC);
+	private static final Set<Character> expectedAllowedCharacters = Set.of(LOWERB);
 
 	@Test
-	void getAllowedCharacters() {
+	void shouldRemoveForbiddenCharactersInAllCases() {
 
 		Word word = new Word("ABC", forbiddenCharacters);
 
 		Assertions.assertEquals(expectedAllowedCharacters, word.getAllowedCharacters());
-	}
-
-	@Test
-	void todo() {
-
-		// TODO check for upper/lowercase
 	}
 
 }

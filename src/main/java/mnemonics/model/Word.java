@@ -22,9 +22,9 @@ public class Word {
 	public Word(String text, List<Character> forbiddenCharacters) {
 
 		setText(text);
-
+		
 		Set<Character> allChars = getAllChars(text);
-		allChars.removeAll(forbiddenCharacters);
+		allChars.removeAll(forbiddenCharacters.stream().map(Character::toLowerCase).toList());
 		setAllowedCharacters(allChars);
 
 		logger.log(Level.INFO, "new word: text:{0},allowedCharacters:{1}", new Object[] { getText(), getAllowedCharacters() });
