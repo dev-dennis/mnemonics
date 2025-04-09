@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,13 +28,32 @@ public class Solution {
 
 	public boolean isValid() {
 
-		Set<Word> words = new HashSet<>();
-		Set<Character> letters = new HashSet<>();
-		for (Mnemonic mnemonic : getMnemonics()) {
-			words.add(mnemonic.getWord());
-			letters.add(mnemonic.getLetter());
-		}
-		return words.size() == letters.size();
+		return !hasDuplicates() && hasEveryWordALetter();
+	}
+
+	private boolean hasDuplicates() {
+
+		return getWordList().size() != getWordSet().size();
+	}
+
+	private boolean hasEveryWordALetter() {
+
+		return getWordSet().size() == getLetterSet().size();
+	}
+
+	private Set<Character> getLetterSet() {
+
+		return getMnemonics().stream().map(Mnemonic::getLetter).collect(Collectors.toSet());
+	}
+
+	private List<Word> getWordList() {
+
+		return getMnemonics().stream().map(Mnemonic::getWord).toList();
+	}
+
+	private Set<Word> getWordSet() {
+
+		return getMnemonics().stream().map(Mnemonic::getWord).collect(Collectors.toSet());
 	}
 
 	@Override
