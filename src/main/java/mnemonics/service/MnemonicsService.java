@@ -45,21 +45,21 @@ public class MnemonicsService {
 		while (!found && lKuerzeListeUm < lWoerter.size()) {
 			logger.log(Level.INFO, "{0} Wort(e) entfernt", Integer.toString(lKuerzeListeUm));
 			logger.log(Level.INFO, "");
-			found = findeLoesungen(lWoerter, lKuerzeListeUm, found);
+			found = findSolutions(lWoerter, lKuerzeListeUm, found);
 			lKuerzeListeUm++;
 		}
 
 	}
 
-	private static boolean findeLoesungen(List<Word> pWoerter, int pKuerzeListeUm, boolean pFound) {
+	private static boolean findSolutions(List<Word> words, int reduceListBy, boolean found) {
 
-		if (pKuerzeListeUm == 0) {
+		if (reduceListBy == 0) {
 
-			ArrayList<Solution> lLoesungen = erzeugeAlleGueltigenMnemonics(pWoerter);
-			if (!lLoesungen.isEmpty()) {
-				pFound = true;
-				logger.log(Level.INFO, "Anzahl Lösungen: {0}", Integer.toString(lLoesungen.size()));
-				for (Solution lLoesung : lLoesungen) {
+			List<Solution> solutions = createAllValidSolutions(words);
+			if (!solutions.isEmpty()) {
+				found = true;
+				logger.log(Level.INFO, "Anzahl Lösungen: {0}", Integer.toString(solutions.size()));
+				for (Solution lLoesung : solutions) {
 					logger.log(Level.INFO, "{0}", lLoesung);
 				}
 
@@ -70,17 +70,16 @@ public class MnemonicsService {
 
 		} else {
 
-			ArrayList<List<Word>> lGekuerzteListen = getReducedListPermutations(pWoerter);
-			for (List<Word> lGekuerzteList : lGekuerzteListen) {
-				pFound = findeLoesungen(lGekuerzteList, pKuerzeListeUm - 1, pFound);
+			List<List<Word>> reducedLists = createReducedListPermutations(words);
+			for (List<Word> reducedList : reducedLists) {
+				found = findSolutions(reducedList, reduceListBy - 1, found);
 			}
-
 		}
 
-		return pFound;
+		return found;
 	}
 
-	static ArrayList<List<Word>> getReducedListPermutations(List<Word> words) {
+	static ArrayList<List<Word>> createReducedListPermutations(List<Word> words) {
 
 		ArrayList<List<Word>> reducedLists = new ArrayList<>();
 		for (Word word : words) {
@@ -91,29 +90,26 @@ public class MnemonicsService {
 		return reducedLists;
 	}
 
-	private static ArrayList<Solution> erzeugeAlleGueltigenMnemonics(List<Word> pWoerter) {
+	private static List<Solution> createAllValidSolutions(List<Word> words) {
 
-		ArrayList<Solution> lLoesungen = new ArrayList<>();
-
-		if (pWoerter.isEmpty()) {
-			return new ArrayList<>();
-		} else if (pWoerter.size() == 1) {
-			List<Mnemonic> mnemonics = Mnemonic.getAll(pWoerter.get(0));
-			for (Mnemonic mnemonic : mnemonics) {
-				lLoesungen.add(new Solution(mnemonic));
-			}
+		if (words.isEmpty()) {
+			return List.of();
+		} else if (words.size() == 1) {
+			return Solution.createAll(words.get(0));
 		} else {
-			ArrayList<Solution> lLoesungen1 = erzeugeAlleGueltigenMnemonics(pWoerter.subList(0, (pWoerter.size() + 1) / 2));
-			ArrayList<Solution> lLoesungen2 = erzeugeAlleGueltigenMnemonics(pWoerter.subList((pWoerter.size() + 1) / 2, pWoerter.size()));
-			for (Solution loesung1 : lLoesungen1) {
-				for (Solution loesung2 : lLoesungen2) {
-					Solution loesung = new Solution(loesung1, loesung2);
-					if (loesung.isValid()) {
-						lLoesungen.add(loesung);
+			List<Solution> solutions = new ArrayList<>();
+			List<Solution> solutions1 = createAllValidSolutions(words.subList(0, words.size() / 2));
+			List<Solution> solutions2 = createAllValidSolutions(words.subList(words.size() / 2, words.size()));
+			for (Solution solution1 : solutions1) {
+				for (Solution solution2 : solutions2) {
+					Solution solution = new Solution(solution1, solution2);
+					if (solution.isValid()) {
+						solutions.add(solution);
 					}
 				}
 			}
+			return solutions;
 		}
-		return lLoesungen;
 	}
+
 }

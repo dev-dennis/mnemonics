@@ -16,7 +16,7 @@ class MnemonicsServiceTest {
 	@Test
 	final void getReducedListPermutations() {
 
-		ArrayList<List<Word>> wordsList = MnemonicsService.getReducedListPermutations(words);
+		ArrayList<List<Word>> wordsList = MnemonicsService.createReducedListPermutations(words);
 		Set<List<Word>> wordsListSet = new HashSet<>(wordsList);
 
 		HashSet<List<Word>> expectedWordsListSet = new HashSet<>(expectedWordsList);

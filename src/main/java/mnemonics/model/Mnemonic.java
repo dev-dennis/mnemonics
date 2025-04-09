@@ -19,7 +19,7 @@ public class Mnemonic {
 		setLetter(Character.toLowerCase(letter));
 	}
 
-	public static List<Mnemonic> getAll(Word word) {
+	public static List<Mnemonic> createAll(Word word) {
 
 		Set<Character> chars = word.getAllowedCharacters();
 		return chars.stream().map(c -> new Mnemonic(word, c)).toList();

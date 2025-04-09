@@ -22,6 +22,17 @@ public class Solution {
 		getMnemonics().addAll(solution2.getMnemonics());
 	}
 
+	public void merge(Solution solution) {
+
+		getMnemonics().addAll(solution.getMnemonics());
+	}
+
+	public static List<Solution> createAll(Word word) {
+
+		List<Mnemonic> mnemonicList = Mnemonic.createAll(word);
+		return mnemonicList.stream().map(Solution::new).toList();
+	}
+
 	public boolean isValid() {
 
 		return !hasDuplicates() && hasEveryWordALetter();

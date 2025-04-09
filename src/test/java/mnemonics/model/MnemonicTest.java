@@ -14,7 +14,7 @@ class MnemonicTest {
 	@Test
 	void shouldContainAllExpectedMnemonics() {
 
-		List<Mnemonic> all = Mnemonic.getAll(WORD_ABC);
+		List<Mnemonic> all = Mnemonic.createAll(WORD_ABC);
 		Set<Mnemonic> allSet = new HashSet<Mnemonic>(all);
 
 		assertTrue(EXPECTED_SET.containsAll(allSet));
