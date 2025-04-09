@@ -1,13 +1,9 @@
 package mnemonics.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
+import java.util.logging.*;
 
-import mnemonics.model.Mnemonic;
-import mnemonics.model.Solution;
-import mnemonics.model.Word;
+import mnemonics.model.*;
 
 public class MnemonicsService {
 

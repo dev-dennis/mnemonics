@@ -1,11 +1,8 @@
 package mnemonics.model;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter

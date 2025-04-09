@@ -1,13 +1,9 @@
 package mnemonics.model;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
+import java.util.logging.*;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -22,7 +18,7 @@ public class Word {
 	public Word(String text, List<Character> forbiddenCharacters) {
 
 		setText(text);
-		
+
 		Set<Character> allChars = getAllChars(text);
 		allChars.removeAll(forbiddenCharacters.stream().map(Character::toLowerCase).toList());
 		setAllowedCharacters(allChars);
