@@ -1,9 +1,10 @@
-package mnemonics.service;
+package mnemonics;
 
 import java.util.*;
 import java.util.logging.*;
 
 import mnemonics.model.Solution;
+import mnemonics.service.MnemonicsService;
 
 public class Main {
 

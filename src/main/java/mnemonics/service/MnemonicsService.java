@@ -10,7 +10,7 @@ public class MnemonicsService {
 
 	}
 
-	static List<Solution> solve(String[] args, int reduceListBy) {
+	public static List<Solution> solve(String[] args, int reduceListBy) {
 
 		List<Character> forbiddenCharacters = getForbiddenCharacters(args);
 		List<Word> words = getWords(args, forbiddenCharacters);
@@ -23,7 +23,7 @@ public class MnemonicsService {
 		return findReducedWordsSolutions(words, reduceListBy);
 	}
 
-	static List<Solution> solve(String[] args) {
+	public static List<Solution> solve(String[] args) {
 
 		List<Character> forbiddenCharacters = getForbiddenCharacters(args);
 		List<Word> words = getWords(args, forbiddenCharacters);
