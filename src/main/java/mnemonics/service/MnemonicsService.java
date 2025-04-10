@@ -1,7 +1,6 @@
 package mnemonics.service;
 
 import java.util.*;
-import java.util.logging.*;
 
 import mnemonics.model.*;
 
@@ -11,72 +10,73 @@ public class MnemonicsService {
 
 	}
 
-	static Logger logger = Logger.getLogger("MyLog");
+	static List<Solution> solve(String[] args, int reduceListBy) {
 
-	public static void mnemonic(String[] args) {
+		List<Character> forbiddenCharacters = getForbiddenCharacters(args);
+		List<Word> words = getWords(args, forbiddenCharacters);
 
-		if (args.length != 2) {
-			logger.info("Erwartet: abc Apfel,Birne,Clementine");
-			return;
-		}
-
-		String[] pVergebeneBuchstaben = args[0].split("\\,");
-		ArrayList<Character> lVergebeneBuchstaben = new ArrayList<>();
-		for (String lString : pVergebeneBuchstaben) {
-			if (lString.length() == 1) {
-				lVergebeneBuchstaben.add(lString.charAt(0));
-			} else {
-				logger.info("Erwartet: abc");
-				return;
-			}
-		}
-
-		String[] pWoerter = args[1].split("\\,");
-		ArrayList<Word> lWoerter = new ArrayList<>();
-		for (String pWort : pWoerter) {
-			lWoerter.add(new Word(pWort, lVergebeneBuchstaben));
-		}
-
-		logger.log(Level.INFO, "Vergebene Buchstaben: {0}", lVergebeneBuchstaben);
-		logger.log(Level.INFO, "");
-
-		int lKuerzeListeUm = 0;
-		boolean found = false;
-		while (!found && lKuerzeListeUm < lWoerter.size()) {
-			logger.log(Level.INFO, "{0} Wort(e) entfernt", Integer.toString(lKuerzeListeUm));
-			logger.log(Level.INFO, "");
-			found = findSolutions(lWoerter, lKuerzeListeUm, found);
-			lKuerzeListeUm++;
-		}
-
+		return solve(words, reduceListBy);
 	}
 
-	private static boolean findSolutions(List<Word> words, int reduceListBy, boolean found) {
+	private static List<Solution> solve(List<Word> words, int reduceListBy) {
 
-		if (reduceListBy == 0) {
+		return findReducedWordsSolutions(words, reduceListBy);
+	}
 
-			List<Solution> solutions = createAllValidSolutions(words);
-			if (!solutions.isEmpty()) {
-				found = true;
-				logger.log(Level.INFO, "Anzahl Lösungen: {0}", Integer.toString(solutions.size()));
-				for (Solution lLoesung : solutions) {
-					logger.log(Level.INFO, "{0}", lLoesung);
-				}
+	static List<Solution> solve(String[] args) {
 
-			} else {
-				logger.log(Level.INFO, "Keine Lösungen");
-			}
-			logger.log(Level.INFO, "");
+		List<Character> forbiddenCharacters = getForbiddenCharacters(args);
+		List<Word> words = getWords(args, forbiddenCharacters);
 
-		} else {
+		return solve(words);
+	}
 
-			List<List<Word>> reducedLists = createReducedListPermutations(words);
-			for (List<Word> reducedList : reducedLists) {
-				found = findSolutions(reducedList, reduceListBy - 1, found);
+	private static List<Solution> solve(List<Word> words) {
+
+		int reduceListBy = 0;
+		List<Solution> solutions = new ArrayList<>();
+		while (solutions.isEmpty() && reduceListBy < words.size()) {
+			solutions.addAll(findReducedWordsSolutions(words, reduceListBy));
+			reduceListBy++;
+		}
+		return solutions;
+	}
+
+	private static List<Word> getWords(String[] args, List<Character> forbiddenCharacters) {
+
+		String[] wordStrings = args[1].split("\\,");
+		List<Word> words = new ArrayList<>();
+		for (String word : wordStrings) {
+			words.add(new Word(word, forbiddenCharacters));
+		}
+		return words;
+	}
+
+	private static List<Character> getForbiddenCharacters(String[] args) {
+
+		String[] forbiddenStrings = args[0].split("\\,");
+		List<Character> forbiddenCharacters = new ArrayList<>();
+		for (String forbiddenString : forbiddenStrings) {
+			if (forbiddenString.length() == 1) {
+				forbiddenCharacters.add(forbiddenString.charAt(0));
 			}
 		}
+		return forbiddenCharacters;
+	}
 
-		return found;
+	private static List<Solution> findReducedWordsSolutions(List<Word> words, int reduceListBy) {
+
+		if (reduceListBy == 0) {
+			return createAllValidSolutions(words);
+		} else {
+			List<List<Word>> reducedLists = createReducedListPermutations(words);
+			List<Solution> solutions = new ArrayList<>();
+			for (List<Word> reducedList : reducedLists) {
+				solutions.addAll(findReducedWordsSolutions(reducedList, reduceListBy - 1));
+			}
+			return solutions;
+		}
+
 	}
 
 	static ArrayList<List<Word>> createReducedListPermutations(List<Word> words) {

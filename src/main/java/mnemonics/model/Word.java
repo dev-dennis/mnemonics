@@ -23,7 +23,7 @@ public class Word {
 		allChars.removeAll(forbiddenCharacters.stream().map(Character::toLowerCase).toList());
 		setAllowedCharacters(allChars);
 
-		logger.log(Level.INFO, "new word: text:{0},allowedCharacters:{1}", new Object[] { getText(), getAllowedCharacters() });
+		logger.log(Level.FINE, "new word: text:{0},allowedCharacters:{1}", new Object[] { getText(), getAllowedCharacters() });
 	}
 
 	private Set<Character> getAllChars(String text) {
