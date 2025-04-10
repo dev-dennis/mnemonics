@@ -1,1 +1,0 @@
-java -Dfile.encoding=UTF-8 -jar Mnemonics.jar u,g,r,b,f,n,o,h,m,w,t,n,l Details,Berechnen,Neu,Lschen,Stornieren,MedInd,Rechnungen,Erstattungen,Neu,Lschen
