@@ -13,16 +13,26 @@ public class MnemonicsService {
 
 	}
 
-	public List<Solution> solveit(String words, String forbiddenCharacters) {
+	public static List<Solution> solveit(String words, String forbiddenCharacters) {
 
-		List<Character> forbiddenCharacters2 = getForbiddenCharacters(forbiddenCharacters);
+		List<Character> forbiddenCharacters2 = getForbiddenCharacters2(forbiddenCharacters);
 		List<Word> words2 = getWords(words, forbiddenCharacters2);
 
 		return solve(words2);
 
 	}
 
-	private List<Word> getWords(String pwords, List<Character> forbiddenCharacters2) {
+	private static List<Character> getForbiddenCharacters2(String forbidden) {
+
+		List<Character> forbiddenCharacters = new ArrayList<>();
+		for (int i = 0; i < forbidden.length(); i++) {
+			forbiddenCharacters.add(forbidden.charAt(i));
+
+		}
+		return forbiddenCharacters;
+	}
+
+	private static List<Word> getWords(String pwords, List<Character> forbiddenCharacters2) {
 
 		String[] wordStrings = pwords.split("\\,");
 		List<Word> words = new ArrayList<>();
@@ -30,18 +40,6 @@ public class MnemonicsService {
 			words.add(new Word(word, forbiddenCharacters2));
 		}
 		return words;
-	}
-
-	private List<Character> getForbiddenCharacters(String forbidden) {
-
-		String[] forbiddenStrings = forbidden.split("\\,");
-		List<Character> forbiddenCharacters = new ArrayList<>();
-		for (String forbiddenString : forbiddenStrings) {
-			if (forbiddenString.length() == 1) {
-				forbiddenCharacters.add(forbiddenString.charAt(0));
-			}
-		}
-		return forbiddenCharacters;
 	}
 
 	public static List<Solution> solve(String[] args, int reduceListBy) {

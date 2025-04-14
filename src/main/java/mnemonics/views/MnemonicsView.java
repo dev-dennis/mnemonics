@@ -2,10 +2,10 @@ package mnemonics.views;
 
 import java.util.*;
 
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 
 import mnemonics.model.Solution;
@@ -18,41 +18,39 @@ public class MnemonicsView extends VerticalLayout {
 
 	TextField words = new TextField("words");
 	TextField forbiddenCharacters = new TextField("forbidden characters");
+	Grid<Solution> grid = new Grid<>();
 
-	TextField solutions = new TextField("solutions");
+	public MnemonicsView() {
 
-	Button submit = new Button("submit");
-
-	private MnemonicsService service;
-
-	public MnemonicsView(MnemonicsService service) {
-
-		this.service = service;
+		this.setHeightFull();
 
 		words.setValue("Apfel,Birne,Clementine");
-		forbiddenCharacters.setValue("A,a,p,f,l,B,b,i,r,n,C,c,l,m,n,t,i,n");
+		words.setValueChangeMode(ValueChangeMode.LAZY);
+		words.addValueChangeListener(e -> findsolutions());
+		words.setWidthFull();
 
-		solutions.setWidthFull();
-		solutions.setReadOnly(true);
+		forbiddenCharacters.setValue("ApflBirnClmntin");
+		forbiddenCharacters.setValueChangeMode(ValueChangeMode.LAZY);
+		forbiddenCharacters.addValueChangeListener(e -> findsolutions());
+		forbiddenCharacters.setWidthFull();
+
+		grid.setWidthFull();
+		grid.setHeightFull();
+		grid.addColumn(s -> s.getMnemonics()).setHeader("solutions");
+		grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
 		add(words);
 		add(forbiddenCharacters);
-		add(submit);
-		add(solutions);
+		add(grid);
 
-		submit.addClickShortcut(Key.ENTER);
-		submit.addClickListener(e -> findsolutions());
+		findsolutions();
 	}
 
 	private void findsolutions() {
 
-		List<Solution> solveit = service.solveit(words.getValue(), forbiddenCharacters.getValue());
-
+		List<Solution> solveit = MnemonicsService.solveit(words.getValue(), forbiddenCharacters.getValue());
 		HashSet<Solution> solutionSet = new HashSet<>(solveit);
-		if (solutionSet.isEmpty()) {
-			solutions.setValue("no solutions");
-		} else {
-			solutions.setValue(solutionSet.toString());
-		}
+		grid.setItems(solutionSet);
+
 	}
 }
