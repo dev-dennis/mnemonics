@@ -13,57 +13,38 @@ public class MnemonicsService {
 
 	}
 
-	public static List<Solution> solveit(String words, String forbiddenCharacters) {
+	public static List<Solution> findSolutions(String wordString, String forbiddenString) {
 
-		List<Character> forbiddenCharacters2 = getForbiddenCharacters2(forbiddenCharacters);
-		List<Word> words2 = getWords(words, forbiddenCharacters2);
-
-		return solve(words2);
-
+		List<Word> words = createWords(wordString, toCharacterList(forbiddenString));
+		return findSolutions(words);
 	}
 
-	private static List<Character> getForbiddenCharacters2(String forbidden) {
+	public static List<Solution> findSolutions(String wordString, String forbiddenString, int reduceListBy) {
+
+		List<Word> words = createWords(wordString, toCharacterList(forbiddenString));
+		return findReducedWordsSolutions(words, reduceListBy);
+	}
+
+	private static List<Character> toCharacterList(String forbidden) {
 
 		List<Character> forbiddenCharacters = new ArrayList<>();
 		for (int i = 0; i < forbidden.length(); i++) {
 			forbiddenCharacters.add(forbidden.charAt(i));
-
 		}
 		return forbiddenCharacters;
 	}
 
-	private static List<Word> getWords(String pwords, List<Character> forbiddenCharacters2) {
+	private static List<Word> createWords(String wordsString, List<Character> forbiddenCharacters) {
 
-		String[] wordStrings = pwords.split("\\,");
+		String[] wordStrings = wordsString.split("\\,");
 		List<Word> words = new ArrayList<>();
 		for (String word : wordStrings) {
-			words.add(new Word(word, forbiddenCharacters2));
+			words.add(new Word(word, forbiddenCharacters));
 		}
 		return words;
 	}
 
-	public static List<Solution> solve(String[] args, int reduceListBy) {
-
-		List<Character> forbiddenCharacters = getForbiddenCharacters(args);
-		List<Word> words = getWords(args, forbiddenCharacters);
-
-		return solve(words, reduceListBy);
-	}
-
-	private static List<Solution> solve(List<Word> words, int reduceListBy) {
-
-		return findReducedWordsSolutions(words, reduceListBy);
-	}
-
-	public static List<Solution> solve(String[] args) {
-
-		List<Character> forbiddenCharacters = getForbiddenCharacters(args);
-		List<Word> words = getWords(args, forbiddenCharacters);
-
-		return solve(words);
-	}
-
-	private static List<Solution> solve(List<Word> words) {
+	private static List<Solution> findSolutions(List<Word> words) {
 
 		int reduceListBy = 0;
 		List<Solution> solutions = new ArrayList<>();
@@ -72,28 +53,6 @@ public class MnemonicsService {
 			reduceListBy++;
 		}
 		return solutions;
-	}
-
-	private static List<Word> getWords(String[] args, List<Character> forbiddenCharacters) {
-
-		String[] wordStrings = args[1].split("\\,");
-		List<Word> words = new ArrayList<>();
-		for (String word : wordStrings) {
-			words.add(new Word(word, forbiddenCharacters));
-		}
-		return words;
-	}
-
-	private static List<Character> getForbiddenCharacters(String[] args) {
-
-		String[] forbiddenStrings = args[0].split("\\,");
-		List<Character> forbiddenCharacters = new ArrayList<>();
-		for (String forbiddenString : forbiddenStrings) {
-			if (forbiddenString.length() == 1) {
-				forbiddenCharacters.add(forbiddenString.charAt(0));
-			}
-		}
-		return forbiddenCharacters;
 	}
 
 	private static List<Solution> findReducedWordsSolutions(List<Word> words, int reduceListBy) {

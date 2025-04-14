@@ -48,9 +48,8 @@ public class MnemonicsView extends VerticalLayout {
 
 	private void findsolutions() {
 
-		List<Solution> solveit = MnemonicsService.solveit(words.getValue(), forbiddenCharacters.getValue());
-		HashSet<Solution> solutionSet = new HashSet<>(solveit);
+		List<Solution> solutions = MnemonicsService.findSolutions(words.getValue(), forbiddenCharacters.getValue());
+		HashSet<Solution> solutionSet = new HashSet<>(solutions);
 		grid.setItems(solutionSet);
-
 	}
 }
