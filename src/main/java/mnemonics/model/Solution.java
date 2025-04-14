@@ -67,11 +67,6 @@ public class Solution {
 	@Override
 	public String toString() {
 
-		StringBuilder sb = new StringBuilder();
-		for (Mnemonic mnemonic : getMnemonics()) {
-			sb.append(mnemonic);
-			sb.append(";");
-		}
-		return sb.toString();
+		return getMnemonics().toString();
 	}
 }

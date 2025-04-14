@@ -2,12 +2,46 @@ package mnemonics.service;
 
 import java.util.*;
 
+import org.springframework.stereotype.Service;
+
 import mnemonics.model.*;
 
+@Service
 public class MnemonicsService {
 
 	private MnemonicsService() {
 
+	}
+
+	public List<Solution> solveit(String words, String forbiddenCharacters) {
+
+		List<Character> forbiddenCharacters2 = getForbiddenCharacters(forbiddenCharacters);
+		List<Word> words2 = getWords(words, forbiddenCharacters2);
+
+		return solve(words2);
+
+	}
+
+	private List<Word> getWords(String pwords, List<Character> forbiddenCharacters2) {
+
+		String[] wordStrings = pwords.split("\\,");
+		List<Word> words = new ArrayList<>();
+		for (String word : wordStrings) {
+			words.add(new Word(word, forbiddenCharacters2));
+		}
+		return words;
+	}
+
+	private List<Character> getForbiddenCharacters(String forbidden) {
+
+		String[] forbiddenStrings = forbidden.split("\\,");
+		List<Character> forbiddenCharacters = new ArrayList<>();
+		for (String forbiddenString : forbiddenStrings) {
+			if (forbiddenString.length() == 1) {
+				forbiddenCharacters.add(forbiddenString.charAt(0));
+			}
+		}
+		return forbiddenCharacters;
 	}
 
 	public static List<Solution> solve(String[] args, int reduceListBy) {

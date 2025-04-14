@@ -28,6 +28,6 @@ public class Mnemonic {
 	@Override
 	public String toString() {
 
-		return getWord().getText() + "," + getLetter();
+		return getWord().getText() + ":" + getLetter();
 	}
 }
