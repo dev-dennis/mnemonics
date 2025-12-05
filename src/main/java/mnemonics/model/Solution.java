@@ -34,34 +34,9 @@ public class Solution {
 		return mnemonicList.stream().map(Solution::new).toList();
 	}
 
-	public boolean isValid() {
-
-		return !hasDuplicates() && hasEveryWordALetter();
-	}
-
-	private boolean hasDuplicates() {
-
-		return getWordList().size() != getWordSet().size();
-	}
-
-	private boolean hasEveryWordALetter() {
-
-		return getWordSet().size() == getLetterSet().size();
-	}
-
-	private Set<Character> getLetterSet() {
+	public Set<Character> getLetterSet() {
 
 		return getMnemonics().stream().map(Mnemonic::getLetter).collect(Collectors.toSet());
-	}
-
-	private List<Word> getWordList() {
-
-		return getMnemonics().stream().map(Mnemonic::getWord).toList();
-	}
-
-	private Set<Word> getWordSet() {
-
-		return getMnemonics().stream().map(Mnemonic::getWord).collect(Collectors.toSet());
 	}
 
 	@Override

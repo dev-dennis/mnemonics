@@ -7,6 +7,7 @@ import lombok.*;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 public class Word {
 
 	static Logger logger = Logger.getLogger("MyLog");

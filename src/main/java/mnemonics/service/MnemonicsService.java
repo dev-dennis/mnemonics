@@ -92,10 +92,10 @@ public class MnemonicsService {
 			List<Solution> solutions1 = createAllValidSolutions(words.subList(0, words.size() / 2));
 			List<Solution> solutions2 = createAllValidSolutions(words.subList(words.size() / 2, words.size()));
 			for (Solution solution1 : solutions1) {
+				Set<Character> letterSet1 = solution1.getLetterSet();
 				for (Solution solution2 : solutions2) {
-					Solution solution = new Solution(solution1, solution2);
-					if (solution.isValid()) {
-						solutions.add(solution);
+					if (Collections.disjoint(letterSet1, solution2.getLetterSet())) {
+						solutions.add(new Solution(solution1, solution2));
 					}
 				}
 			}
