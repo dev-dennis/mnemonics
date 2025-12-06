@@ -19,10 +19,10 @@ public class MnemonicsService {
 		return findSolutions(words);
 	}
 
-	public static List<Solution> findSolutions(String wordString, String forbiddenString, int reduceListBy) {
+	public static List<Solution> findSolutions(String wordString, String forbiddenString, int wordsToUse) {
 
 		List<Word> words = createWords(wordString, toCharacterList(forbiddenString));
-		return findReducedWordsSolutions(words, reduceListBy);
+		return findReducedWordsSolutions(words, words.size() - wordsToUse);
 	}
 
 	private static List<Character> toCharacterList(String forbidden) {
