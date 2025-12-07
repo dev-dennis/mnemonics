@@ -13,16 +13,16 @@ public class MnemonicsService {
 
 	}
 
-	public static List<Solution> findSolutions(String wordString, String forbiddenString) {
-
-		List<Word> words = createWords(wordString, toCharacterList(forbiddenString));
-		return findSolutions(words);
-	}
-
 	public static List<Solution> findSolutions(String wordString, String forbiddenString, int wordsToUse) {
 
 		List<Word> words = createWords(wordString, toCharacterList(forbiddenString));
-		return findReducedWordsSolutions(words, words.size() - wordsToUse);
+		List<List<Word>> reducedWordLists = generateReducedWordLists(words, wordsToUse);
+		List<Solution> result = new ArrayList<>();
+		for (List<Word> list : reducedWordLists) {
+			List<Solution> allValidSolutions = createAllValidSolutions(list);
+			result.addAll(allValidSolutions);
+		}
+		return result;
 	}
 
 	private static List<Character> toCharacterList(String forbidden) {
@@ -44,41 +44,30 @@ public class MnemonicsService {
 		return words;
 	}
 
-	private static List<Solution> findSolutions(List<Word> words) {
+	static List<List<Word>> generateReducedWordLists(List<Word> words, int numberOfWords) {
 
-		int reduceListBy = 0;
-		List<Solution> solutions = new ArrayList<>();
-		while (solutions.isEmpty() && reduceListBy < words.size()) {
-			solutions.addAll(findReducedWordsSolutions(words, reduceListBy));
-			reduceListBy++;
-		}
-		return solutions;
-	}
+		List<List<Word>> result = new ArrayList<>();
 
-	private static List<Solution> findReducedWordsSolutions(List<Word> words, int reduceListBy) {
-
-		if (reduceListBy == 0) {
-			return createAllValidSolutions(words);
-		} else {
-			List<List<Word>> reducedLists = createReducedListPermutations(words);
-			List<Solution> solutions = new ArrayList<>();
-			for (List<Word> reducedList : reducedLists) {
-				solutions.addAll(findReducedWordsSolutions(reducedList, reduceListBy - 1));
-			}
-			return solutions;
+		if (words.size() < numberOfWords) {
+			return result;
 		}
 
-	}
-
-	static ArrayList<List<Word>> createReducedListPermutations(List<Word> words) {
-
-		ArrayList<List<Word>> reducedLists = new ArrayList<>();
-		for (Word word : words) {
-			List<Word> copy = new ArrayList<>(words);
-			copy.remove(word);
-			reducedLists.add(copy);
+		if (numberOfWords == 0) {
+			result.add(new ArrayList<>());
+			return result;
 		}
-		return reducedLists;
+
+		List<List<Word>> reducedWordLists = generateReducedWordLists(words.subList(1, words.size()), numberOfWords - 1);
+		for (List<Word> list : reducedWordLists) {
+			List<Word> newList = new ArrayList<>();
+			newList.add(words.get(0));
+			newList.addAll(list);
+			result.add(newList);
+		}
+		if (words.size() > numberOfWords) {
+			result.addAll(generateReducedWordLists(words.subList(1, words.size()), numberOfWords));
+		}
+		return result;
 	}
 
 	private static List<Solution> createAllValidSolutions(List<Word> words) {

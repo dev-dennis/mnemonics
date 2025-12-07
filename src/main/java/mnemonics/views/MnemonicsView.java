@@ -18,10 +18,10 @@ public class MnemonicsView extends VerticalLayout {
 
 	private static final long serialVersionUID = -239201362029002492L;
 
-	private final TextField words = new TextField("Words");
-	private final TextField forbiddenCharacters = new TextField("Forbidden Characters");
+	private final TextField words = new TextField();
+	private final TextField forbiddenCharacters = new TextField();
 	private final Select<Integer> numberOfWords = new Select<>();
-	private final Grid<Solution> grid = new Grid<>();
+	private final Grid<Solution> solutions = new Grid<>();
 
 	public MnemonicsView() {
 
@@ -41,92 +41,88 @@ public class MnemonicsView extends VerticalLayout {
 
 	private void configureWordsField() {
 
+		words.setWidthFull();
+		words.setLabel("words");
 		words.setValue("Neu,Löschen,Prüfen");
 		words.setValueChangeMode(ValueChangeMode.LAZY);
 		words.addValueChangeListener(e -> {
-			updateWordCountDropdown();
+			updateNumberOfWords();
 			findSolutions();
 		});
-		words.setWidthFull();
-		words.setHelperText("Separate words with commas");
 	}
 
 	private void configureForbiddenCharactersField() {
 
+		forbiddenCharacters.setWidthFull();
+		forbiddenCharacters.setLabel("forbidden characters");
 		forbiddenCharacters.setValue("euöscherüfe");
 		forbiddenCharacters.setValueChangeMode(ValueChangeMode.LAZY);
 		forbiddenCharacters.addValueChangeListener(e -> findSolutions());
-		forbiddenCharacters.setWidthFull();
-		forbiddenCharacters.setHelperText("Characters to exclude from mnemonics");
 	}
 
 	private void configureWordCountDropdown() {
 
 		numberOfWords.setWidthFull();
+		numberOfWords.setLabel("number of words to use");
 		numberOfWords.setItemLabelGenerator(String::valueOf);
 		numberOfWords.addValueChangeListener(e -> findSolutions());
-		numberOfWords.setLabel("Number of Words to Use");
-		numberOfWords.setHelperText("Reduce if no solutions are found");
 	}
 
 	private void configureGrid() {
 
-		grid.setWidthFull();
-		grid.setHeightFull();
-		grid.addColumn(Solution::getMnemonics).setHeader("Solutions");
-		grid.getColumns().forEach(col -> col.setAutoWidth(true));
+		solutions.setWidthFull();
+		solutions.setHeightFull();
+		solutions.addColumn(Solution::getMnemonics).setHeader("Solutions");
+		solutions.getColumns().forEach(col -> col.setAutoWidth(true));
 	}
 
 	private void addComponents() {
 
-		add(words, forbiddenCharacters, numberOfWords, grid);
+		add(words, forbiddenCharacters, numberOfWords, solutions);
 	}
 
 	private void initialize() {
 
-		updateWordCountDropdown();
+		updateNumberOfWords();
 		findSolutions();
 	}
 
 	private void findSolutions() {
 
-		Integer selectedWordCount = numberOfWords.getValue();
-
-		if (selectedWordCount == null) {
-			grid.setItems(Collections.emptySet());
+		if (numberOfWords.getValue() == null) {
+			solutions.setItems(Collections.emptySet());
 			return;
 		}
 
-		List<Solution> solutions = MnemonicsService.findSolutions(words.getValue(), forbiddenCharacters.getValue(), selectedWordCount);
-
-		grid.setItems(solutions);
+		List<Solution> solutionList = MnemonicsService.findSolutions(words.getValue(), forbiddenCharacters.getValue(), numberOfWords.getValue());
+		solutions.setItems(solutionList);
 	}
 
-	private void updateWordCountDropdown() {
+	private void updateNumberOfWords() {
 
 		String wordsValue = words.getValue().trim();
 		if (wordsValue.isEmpty()) {
-			disableWordCountDropdown();
+			disableNumberOfWords();
 			return;
 		}
-		enableWordCountDropdown(wordsValue);
+		enableNumberOfWords(wordsValue);
 	}
 
-	private void disableWordCountDropdown() {
+	private void disableNumberOfWords() {
 
 		numberOfWords.setItems();
 		numberOfWords.setEnabled(false);
 	}
 
-	private void enableWordCountDropdown(String wordsValue) {
+	private void enableNumberOfWords(String wordsValue) {
 
-		List<Integer> options = generateWordCountOptions(wordsValue);
+		List<Integer> options = generateNumberOfWordsOptions(wordsValue);
 		numberOfWords.setItems(options);
-		numberOfWords.setEnabled(true);
 		numberOfWords.setValue(options.get(0));
+		numberOfWords.setEnabled(true);
 	}
 
-	private List<Integer> generateWordCountOptions(String wordsValue) {
+	private List<Integer> generateNumberOfWordsOptions(String wordsValue) {
 
 		int wordsCount = countWords(wordsValue);
 		return IntStream.rangeClosed(1, wordsCount).boxed().sorted(Comparator.reverseOrder()).toList();
