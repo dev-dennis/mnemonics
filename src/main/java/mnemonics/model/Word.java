@@ -2,6 +2,7 @@ package mnemonics.model;
 
 import java.util.*;
 import java.util.logging.*;
+import java.util.stream.Collectors;
 
 import lombok.*;
 
@@ -29,12 +30,7 @@ public class Word {
 
 	private Set<Character> getAllChars(String text) {
 
-		Set<Character> chars = new HashSet<>();
-		String lowerCase = text.toLowerCase();
-		for (int i = 0; i < lowerCase.length(); i++) {
-			chars.add(lowerCase.charAt(i));
-		}
-		return chars;
+		return text.toLowerCase().chars().mapToObj(c -> (char) c).collect(Collectors.toSet());
 	}
 
 	@Override

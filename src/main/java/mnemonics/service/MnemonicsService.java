@@ -9,11 +9,7 @@ import mnemonics.model.*;
 @Service
 public class MnemonicsService {
 
-	private MnemonicsService() {
-
-	}
-
-	public static List<Solution> findSolutions(String wordString, String forbiddenString, int wordsToUse) {
+	public List<Solution> findSolutions(String wordString, String forbiddenString, int wordsToUse) {
 
 		List<Word> words = createWords(wordString, toCharacterList(forbiddenString));
 		List<List<Word>> reducedWordLists = generateReducedWordLists(words, wordsToUse);
@@ -27,21 +23,12 @@ public class MnemonicsService {
 
 	private static List<Character> toCharacterList(String forbidden) {
 
-		List<Character> forbiddenCharacters = new ArrayList<>();
-		for (int i = 0; i < forbidden.length(); i++) {
-			forbiddenCharacters.add(forbidden.charAt(i));
-		}
-		return forbiddenCharacters;
+		return forbidden.chars().mapToObj(c -> (char) c).toList();
 	}
 
 	private static List<Word> createWords(String wordsString, List<Character> forbiddenCharacters) {
 
-		String[] wordStrings = wordsString.split("\\,");
-		List<Word> words = new ArrayList<>();
-		for (String word : wordStrings) {
-			words.add(new Word(word, forbiddenCharacters));
-		}
-		return words;
+		return Arrays.stream(wordsString.split("\\,")).map(String::trim).filter(w -> !w.isEmpty()).map(w -> new Word(w, forbiddenCharacters)).toList();
 	}
 
 	static List<List<Word>> generateReducedWordLists(List<Word> words, int numberOfWords) {

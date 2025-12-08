@@ -1,7 +1,7 @@
 package mnemonics.model;
 
 import static mnemonics.constants.TestConstants.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.*;
 
@@ -14,10 +14,9 @@ class MnemonicTest {
 	@Test
 	void shouldContainAllExpectedMnemonics() {
 
-		List<Mnemonic> all = Mnemonic.createAll(WORD_ABC);
-		Set<Mnemonic> allSet = new HashSet<Mnemonic>(all);
+		Set<Mnemonic> allSet = new HashSet<Mnemonic>(Mnemonic.createAll(WORD_ABC));
 
-		assertTrue(EXPECTED_SET.containsAll(allSet));
+		assertEquals(EXPECTED_SET, allSet);
 	}
 
 }

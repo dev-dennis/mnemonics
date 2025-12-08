@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Test;
 class SolutionTest {
 
 	@Test
-	void shouldBeInvalidWhenTwoMnemonicHaveSameLetter() {
+	void shouldReturnCorrectLetterSet() {
 
 		Solution solution = new Solution(MNEMONIC_ABC_A);
 
-		assertEquals(solution.getLetterSet(), Set.of(Character.toLowerCase(A)));
+		assertEquals(Set.of('a'), solution.getLetterSet());
 	}
 
 }

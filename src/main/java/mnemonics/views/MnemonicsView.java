@@ -18,12 +18,16 @@ public class MnemonicsView extends VerticalLayout {
 
 	private static final long serialVersionUID = -239201362029002492L;
 
+	private final transient MnemonicsService service;
+
 	private final TextField words = new TextField();
 	private final TextField forbiddenCharacters = new TextField();
 	private final Select<Integer> numberOfWords = new Select<>();
 	private final Grid<Solution> solutions = new Grid<>();
 
-	public MnemonicsView() {
+	public MnemonicsView(MnemonicsService service) {
+
+		this.service = service;
 
 		setHeightFull();
 		configureComponents();
@@ -94,7 +98,7 @@ public class MnemonicsView extends VerticalLayout {
 			return;
 		}
 
-		List<Solution> solutionList = MnemonicsService.findSolutions(words.getValue(), forbiddenCharacters.getValue(), numberOfWords.getValue());
+		List<Solution> solutionList = service.findSolutions(words.getValue(), forbiddenCharacters.getValue(), numberOfWords.getValue());
 		solutions.setItems(solutionList);
 	}
 
