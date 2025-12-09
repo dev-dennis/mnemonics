@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
 import mnemonics.model.*;
 
@@ -17,7 +17,7 @@ class MnemonicsServiceTest {
 	@Test
 	final void shouldGenerateCorrectReducedWordLists() {
 
-		Set<List<Word>> actual = new HashSet<>(MnemonicsService.generateReducedWordLists(words, 3));
+		Set<List<Word>> actual = new HashSet<>(WordGenerator.generateReducedWordLists(words, 3));
 
 		Set<List<Word>> expected = new HashSet<>(expectedWordsList);
 

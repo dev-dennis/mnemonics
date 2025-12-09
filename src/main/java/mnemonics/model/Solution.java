@@ -1,7 +1,6 @@
 package mnemonics.model;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import lombok.*;
 
@@ -12,31 +11,33 @@ public class Solution {
 
 	private List<Mnemonic> mnemonics = new ArrayList<>();
 
+	private Set<Character> letterSet = new HashSet<>();
+
 	public Solution(Mnemonic mnemonic) {
 
-		getMnemonics().add(mnemonic);
+		mnemonics.add(mnemonic);
+		letterSet.add(mnemonic.getLetter());
 	}
 
 	public Solution(Solution solution1, Solution solution2) {
 
-		getMnemonics().addAll(solution1.getMnemonics());
-		getMnemonics().addAll(solution2.getMnemonics());
+		mnemonics.addAll(solution1.getMnemonics());
+		letterSet.addAll(solution1.getLetterSet());
+
+		mnemonics.addAll(solution2.getMnemonics());
+		letterSet.addAll(solution2.getLetterSet());
 	}
 
 	public void merge(Solution solution) {
 
-		getMnemonics().addAll(solution.getMnemonics());
+		mnemonics.addAll(solution.getMnemonics());
+		letterSet.addAll(solution.getLetterSet());
 	}
 
 	public static List<Solution> createAll(Word word) {
 
 		List<Mnemonic> mnemonicList = Mnemonic.createAll(word);
 		return mnemonicList.stream().map(Solution::new).toList();
-	}
-
-	public Set<Character> getLetterSet() {
-
-		return getMnemonics().stream().map(Mnemonic::getLetter).collect(Collectors.toSet());
 	}
 
 	@Override
