@@ -22,7 +22,8 @@ public class MnemonicsView extends VerticalLayout {
 
 	private final TextField words = new TextField();
 	private final TextField forbiddenCharacters = new TextField();
-	private final Select<Integer> numberOfWords = new Select<>();
+	private final Select<Integer> wordsCount = new Select<>();
+	private final Select<Integer> resultCount = new Select<>();
 	private final Grid<Solution> solutions = new Grid<>();
 
 	public MnemonicsView(MnemonicsService service) {
@@ -39,7 +40,8 @@ public class MnemonicsView extends VerticalLayout {
 
 		configureWordsField();
 		configureForbiddenCharactersField();
-		configureWordCountDropdown();
+		configureWordsCountDropdown();
+		configureResultCount();
 		configureGrid();
 	}
 
@@ -64,12 +66,24 @@ public class MnemonicsView extends VerticalLayout {
 		forbiddenCharacters.addValueChangeListener(e -> findSolutions());
 	}
 
-	private void configureWordCountDropdown() {
+	private void configureWordsCountDropdown() {
 
-		numberOfWords.setWidthFull();
-		numberOfWords.setLabel("number of words to use");
-		numberOfWords.setItemLabelGenerator(String::valueOf);
-		numberOfWords.addValueChangeListener(e -> findSolutions());
+		wordsCount.setWidthFull();
+		wordsCount.setLabel("number of words to use");
+		wordsCount.setItemLabelGenerator(String::valueOf);
+		wordsCount.addValueChangeListener(e -> findSolutions());
+	}
+
+	private void configureResultCount() {
+
+		resultCount.setWidthFull();
+		resultCount.setLabel("max number of results to return");
+		List<Integer> options = List.of(10, 20, 50);
+		resultCount.setItems(options);
+		resultCount.setValue(options.get(0));
+		resultCount.setItemLabelGenerator(String::valueOf);
+		resultCount.addValueChangeListener(e -> findSolutions());
+
 	}
 
 	private void configureGrid() {
@@ -82,7 +96,7 @@ public class MnemonicsView extends VerticalLayout {
 
 	private void addComponents() {
 
-		add(words, forbiddenCharacters, numberOfWords, solutions);
+		add(words, forbiddenCharacters, wordsCount, resultCount, solutions);
 	}
 
 	private void initialize() {
@@ -93,12 +107,12 @@ public class MnemonicsView extends VerticalLayout {
 
 	private void findSolutions() {
 
-		if (numberOfWords.getValue() == null) {
+		if (wordsCount.getValue() == null) {
 			solutions.setItems(Collections.emptySet());
 			return;
 		}
 
-		List<Solution> solutionList = service.findSolutions(words.getValue(), forbiddenCharacters.getValue(), numberOfWords.getValue());
+		List<Solution> solutionList = service.findSolutions(words.getValue(), forbiddenCharacters.getValue(), wordsCount.getValue(), resultCount.getValue());
 		solutions.setItems(solutionList);
 	}
 
@@ -106,30 +120,30 @@ public class MnemonicsView extends VerticalLayout {
 
 		String wordsValue = words.getValue().trim();
 		if (wordsValue.isEmpty()) {
-			disableNumberOfWords();
+			disableWordsCount();
 			return;
 		}
-		enableNumberOfWords(wordsValue);
+		enableWordsCount(wordsValue);
 	}
 
-	private void disableNumberOfWords() {
+	private void disableWordsCount() {
 
-		numberOfWords.setItems();
-		numberOfWords.setEnabled(false);
+		wordsCount.setItems();
+		wordsCount.setEnabled(false);
 	}
 
-	private void enableNumberOfWords(String wordsValue) {
+	private void enableWordsCount(String wordsValue) {
 
-		List<Integer> options = generateNumberOfWordsOptions(wordsValue);
-		numberOfWords.setItems(options);
-		numberOfWords.setValue(options.get(0));
-		numberOfWords.setEnabled(true);
+		List<Integer> options = generateWordsCountOptions(wordsValue);
+		wordsCount.setItems(options);
+		wordsCount.setValue(options.get(0));
+		wordsCount.setEnabled(true);
 	}
 
-	private List<Integer> generateNumberOfWordsOptions(String wordsValue) {
+	private List<Integer> generateWordsCountOptions(String wordsValue) {
 
-		int wordsCount = countWords(wordsValue);
-		return IntStream.rangeClosed(1, wordsCount).boxed().sorted(Comparator.reverseOrder()).toList();
+		int count = countWords(wordsValue);
+		return IntStream.rangeClosed(1, count).boxed().sorted(Comparator.reverseOrder()).toList();
 	}
 
 	private int countWords(String wordsValue) {

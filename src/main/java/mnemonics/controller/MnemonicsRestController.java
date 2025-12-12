@@ -29,9 +29,11 @@ public class MnemonicsRestController {
 
 			@Parameter(description = "Characters to exclude from solutions", example = "euöscherüfe") @RequestParam(defaultValue = "") String forbidden,
 
-			@Parameter(description = "Number of words to use in solutions", example = "3") @RequestParam int wordsToUse) {
+			@Parameter(description = "Number of words to use in solutions", example = "3") @RequestParam int wordsCount,
 
-		return service.findSolutions(words, forbidden, wordsToUse).stream().map(Solution::toString).toList();
+			@Parameter(description = "Number of results to be returned", example = "10") @RequestParam(defaultValue = "10") int resultCount) {
+
+		return service.findSolutions(words, forbidden, wordsCount, resultCount).stream().map(Solution::toString).toList();
 	}
 
 }

@@ -9,14 +9,20 @@ import mnemonics.model.*;
 @Service
 public class MnemonicsService {
 
-	public List<Solution> findSolutions(String wordString, String forbiddenString, int wordsToUse) {
+	public List<Solution> findSolutions(String wordString, String forbiddenString, int wordsCount, int resultCount) {
 
 		List<Word> words = WordParser.createWords(wordString, forbiddenString);
-		List<List<Word>> reducedWordLists = WordGenerator.generateReducedWordLists(words, wordsToUse);
+		List<List<Word>> reducedWordLists = WordGenerator.generateReducedWordLists(words, wordsCount);
 		List<Solution> result = new ArrayList<>();
 		for (List<Word> list : reducedWordLists) {
 			List<Solution> allValidSolutions = SolutionGenerator.createAllValidSolutions(list);
-			result.addAll(allValidSolutions);
+			for (Solution solution : allValidSolutions) {
+				if (result.size() < resultCount) {
+					result.add(solution);
+				} else {
+					return result;
+				}
+			}
 		}
 		return result;
 	}

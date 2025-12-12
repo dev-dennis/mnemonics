@@ -27,7 +27,7 @@ class MnemonicsServiceTest {
 	@Test
 	void shouldNotCreateDuplicateSolutionsWhenBothWordsOnlyAllowSameLetter() {
 
-		List<Solution> solutions = new MnemonicsService().findSolutions("cat,cat", "ca", 2);
+		List<Solution> solutions = new MnemonicsService().findSolutions("cat,cat", "ca", 2, 100);
 
 		assertTrue(solutions.isEmpty());
 	}
@@ -35,7 +35,7 @@ class MnemonicsServiceTest {
 	@Test
 	void shouldAllowSameWordWithDifferentLetters() {
 
-		List<Solution> solutions = new MnemonicsService().findSolutions("cat,cat", "", 2);
+		List<Solution> solutions = new MnemonicsService().findSolutions("cat,cat", "", 2, 100);
 
 		assertFalse(solutions.isEmpty());
 
