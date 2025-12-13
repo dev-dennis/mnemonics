@@ -21,6 +21,9 @@ public class TestConstants {
 	public static final Word WORD_C = new Word("C", List.of());
 	public static final Word WORD_D = new Word("D", List.of());
 	public static final Word WORD_ABC = new Word("ABC", List.of());
+	public static final Word WORD_NEU = new Word("Neu", List.of());
+	public static final Word WORD_PRÜFEN = new Word("Prüfen", List.of());
+	public static final Word WORD_LÖSCHEN = new Word("Löschen", List.of());
 
 	public static final List<Word> WORDS_ABC = List.of(WORD_A, WORD_B, WORD_C);
 	public static final List<Word> WORDS_ABD = List.of(WORD_A, WORD_B, WORD_D);
@@ -31,5 +34,9 @@ public class TestConstants {
 	public static final Mnemonic MNEMONIC_ABC_A = new Mnemonic(WORD_ABC, A);
 	public static final Mnemonic MNEMONIC_ABC_B = new Mnemonic(WORD_ABC, B);
 	public static final Mnemonic MNEMONIC_ABC_C = new Mnemonic(WORD_ABC, C);
+
+	public static final int MAXRESULTS_10 = 10;
+	public static final int MAXRESULTS_20 = 20;
+	public static final int MAXRESULTS_50 = 50;
 
 }

@@ -19,6 +19,12 @@ public class Solution {
 		letterSet.add(mnemonic.getLetter());
 	}
 
+	public Solution(List<Mnemonic> mnemonics) {
+
+		this.mnemonics.addAll(mnemonics);
+		letterSet.addAll(mnemonics.stream().map(Mnemonic::getLetter).toList());
+	}
+
 	public Solution(Solution solution1, Solution solution2) {
 
 		mnemonics.addAll(solution1.getMnemonics());

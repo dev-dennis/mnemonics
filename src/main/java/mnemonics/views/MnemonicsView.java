@@ -78,7 +78,7 @@ public class MnemonicsView extends VerticalLayout {
 
 		resultCount.setWidthFull();
 		resultCount.setLabel("max number of results to return");
-		List<Integer> options = List.of(10, 20, 50);
+		List<Integer> options = List.of(10, 20, 50, 100);
 		resultCount.setItems(options);
 		resultCount.setValue(options.get(0));
 		resultCount.setItemLabelGenerator(String::valueOf);
