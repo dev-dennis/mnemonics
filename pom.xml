@@ -36,12 +36,13 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-spring-boot-starter</artifactId>
+			<optional>true</optional>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -112,6 +113,7 @@
 	</build>
 
 	<profiles>
+		<!-- Profile for production Vaadin build -->
 		<profile>
 			<id>production</id>
 			<dependencies>
@@ -125,7 +127,6 @@
 						</exclusion>
 					</exclusions>
 				</dependency>
-
 			</dependencies>
 			<build>
 				<plugins>
@@ -147,6 +148,30 @@
 				</plugins>
 			</build>
 		</profile>
+
+		<!-- Profile for API-only build (no Vaadin) -->
+		<profile>
+			<id>api-only</id>
+			<build>
+				<finalName>${project.name}-api-only</finalName>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<excludes>
+								<exclude>
+									<groupId>org.projectlombok</groupId>
+									<artifactId>lombok</artifactId>
+								</exclude>
+							</excludes>
+							<excludeGroupIds>com.vaadin</excludeGroupIds>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
+
 
 </project>
