@@ -4,7 +4,7 @@ import java.util.*;
 
 import mnemonics.model.*;
 
-public class SolutionGenerator2 implements SolutionGenerator {
+public class BacktrackingGenerator implements SolutionGenerator {
 
 	@Override
 	public List<Solution> createAllValidSolutions(List<Word> words, int maxResults) {
