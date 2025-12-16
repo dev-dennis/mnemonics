@@ -4,7 +4,7 @@ import java.util.*;
 
 import mnemonics.model.*;
 
-public class SolutionGenerator1 implements SolutionGenerator {
+public class DivideConquerGenerator implements SolutionGenerator {
 
 	@Override
 	public List<Solution> createAllValidSolutions(List<Word> words, int maxResults) {

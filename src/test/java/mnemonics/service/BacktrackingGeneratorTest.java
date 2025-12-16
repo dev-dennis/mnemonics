@@ -12,19 +12,19 @@ import org.junit.jupiter.params.provider.*;
 
 import mnemonics.model.*;
 
-class SolutionGenerator2Test {
+class BacktrackingGeneratorTest {
 
 	@Test
 	void shouldBe1Results() {
 
-		List<Solution> allValidSolutions = SolutionGenerator2.createAllValidSolutions(WORDS_ABC, new ArrayList<Mnemonic>(), 10);
+		List<Solution> allValidSolutions = BacktrackingGenerator.createAllValidSolutions(WORDS_ABC, new ArrayList<Mnemonic>(), 10);
 		assertEquals(1, allValidSolutions.size());
 	}
 
 	@Test
 	void shouldBe98Results() {
 
-		List<Solution> allValidSolutions = SolutionGenerator2.createAllValidSolutions(List.of(WORD_NEU, WORD_LÖSCHEN, WORD_PRÜFEN), new ArrayList<Mnemonic>(), 100);
+		List<Solution> allValidSolutions = BacktrackingGenerator.createAllValidSolutions(List.of(WORD_NEU, WORD_LÖSCHEN, WORD_PRÜFEN), new ArrayList<Mnemonic>(), 100);
 		assertEquals(98, allValidSolutions.size());
 	}
 
@@ -32,7 +32,7 @@ class SolutionGenerator2Test {
 	@MethodSource("getAllMaxResults")
 	void shouldBeNotMoreThanMaxResults(int maxResults) {
 
-		List<Solution> allValidSolutions = SolutionGenerator2.createAllValidSolutions(List.of(WORD_NEU, WORD_LÖSCHEN, WORD_PRÜFEN), new ArrayList<Mnemonic>(), maxResults);
+		List<Solution> allValidSolutions = BacktrackingGenerator.createAllValidSolutions(List.of(WORD_NEU, WORD_LÖSCHEN, WORD_PRÜFEN), new ArrayList<Mnemonic>(), maxResults);
 		assertTrue(allValidSolutions.size() <= maxResults);
 	}
 
@@ -44,7 +44,9 @@ class SolutionGenerator2Test {
 
 				Arguments.of(MAXRESULTS_20),
 
-				Arguments.of(MAXRESULTS_50)
+				Arguments.of(MAXRESULTS_50),
+
+				Arguments.of(MAXRESULTS_100)
 
 		);
 

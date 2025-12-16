@@ -14,12 +14,7 @@ public class MnemonicsService {
 		List<Word> words = WordParser.createWords(wordString, forbiddenString);
 		List<List<Word>> reducedWordLists = WordGenerator.generateReducedWordLists(words, wordsCount);
 		List<Solution> result = new ArrayList<>();
-		SolutionGenerator solutionGenerator;
-		if (wordsCount > 5) {
-			solutionGenerator = new SolutionGenerator2();
-		} else {
-			solutionGenerator = new SolutionGenerator1();
-		}
+		SolutionGenerator solutionGenerator = SolutionGenerator.forWordCount(wordsCount);
 		for (List<Word> list : reducedWordLists) {
 			List<Solution> allValidSolutions = solutionGenerator.createAllValidSolutions(list, resultCount);
 			for (Solution solution : allValidSolutions) {

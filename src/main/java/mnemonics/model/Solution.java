@@ -34,12 +34,6 @@ public class Solution {
 		letterSet.addAll(solution2.getLetterSet());
 	}
 
-	public void merge(Solution solution) {
-
-		mnemonics.addAll(solution.getMnemonics());
-		letterSet.addAll(solution.getLetterSet());
-	}
-
 	public static List<Solution> createAll(Word word) {
 
 		List<Mnemonic> mnemonicList = Mnemonic.createAll(word);

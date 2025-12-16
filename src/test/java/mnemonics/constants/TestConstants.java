@@ -38,5 +38,6 @@ public class TestConstants {
 	public static final int MAXRESULTS_10 = 10;
 	public static final int MAXRESULTS_20 = 20;
 	public static final int MAXRESULTS_50 = 50;
+	public static final int MAXRESULTS_100 = 100;
 
 }
