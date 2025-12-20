@@ -1,4 +1,4 @@
-name: Upload JAR on Release
+name: Upload JARs on Release
 
 on:
   release:
@@ -11,32 +11,33 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    
     - name: Build with Maven
-      run: mvn -B package -Pproduction --file pom.xml
-    - name: Upload JAR to Release
+      run: mvn -B clean package --file pom.xml
+    
+    - name: Upload UI JAR to Release
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: target/${{ vars.REPO_NAME }}.jar
-        asset_name: ${{ vars.REPO_NAME }}-${{ github.event.release.name }}.jar
+        asset_path: ui/target/${{ vars.REPO_NAME }}-ui.jar
+        asset_name: ${{ vars.REPO_NAME }}-ui-${{ github.event.release.name }}.jar
         asset_content_type: application/java-archive
     
-    - name: Build with Maven (API-only)
-      run: mvn -B clean package -Papi-only --file pom.xml
-    - name: Upload API-only JAR to Release
+    - name: Upload API JAR to Release
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: target/${{ vars.REPO_NAME }}-api-only.jar
-        asset_name: ${{ vars.REPO_NAME }}-${{ github.event.release.name }}-api-only.jar
+        asset_path: api/target/${{ vars.REPO_NAME }}-api.jar
+        asset_name: ${{ vars.REPO_NAME }}-api-${{ github.event.release.name }}.jar
         asset_content_type: application/java-archive
