@@ -1,13 +1,33 @@
-# Build Stage
-FROM maven:3.8.5-openjdk-17 AS build
+# Build Stage - Use Alpine for smaller size
+FROM maven:3.9-eclipse-temurin-17-alpine AS build
 WORKDIR /app
-COPY . .
-RUN mvn clean package -DskipTests && \
-    rm -rf ~/.m2/repository /app/ui/target/test-classes /app/api/target/test-classes
 
-# Runtime Stage
-FROM openjdk:17.0.1-jdk-slim
+# Copy only POM files first for better layer caching
+COPY pom.xml .
+COPY api/pom.xml api/
+COPY core/pom.xml core/
+COPY ui/pom.xml ui/
+
+# Download dependencies (cached if POMs don't change)
+RUN mvn dependency:go-offline -pl api -am || true
+
+# Copy source code
+COPY api/src api/src
+COPY core/src core/src
+
+# Build only what's needed (API and its dependency: core)
+RUN mvn clean package -DskipTests -pl api -am
+
+# Runtime Stage - Modern JRE Alpine (smaller and more secure)
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-COPY --from=build /app/api/target/mnemonics-api.jar /
-EXPOSE 8080:8080
-ENTRYPOINT ["java", "-jar", "/mnemonics-api.jar"]
+
+# Copy only the JAR from build stage
+COPY --from=build /app/api/target/mnemonics-api.jar /app/mnemonics-api.jar
+
+# Security: Run as non-root user
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring:spring
+
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app/mnemonics-api.jar"]
