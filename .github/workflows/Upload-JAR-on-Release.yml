@@ -8,7 +8,7 @@ jobs:
   build:
     permissions: write-all
     runs-on: ubuntu-latest
-
+    
     steps:
     - uses: actions/checkout@v4
     
@@ -19,25 +19,37 @@ jobs:
         distribution: 'temurin'
         cache: maven
     
-    - name: Build with Maven
+    - name: Build all modules with Maven
       run: mvn -B clean package --file pom.xml
     
-    - name: Upload UI JAR to Release
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
       with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ui/target/${{ vars.REPO_NAME }}-ui.jar
-        asset_name: ${{ vars.REPO_NAME }}-ui-${{ github.event.release.name }}.jar
-        asset_content_type: application/java-archive
+        name: jars
+        path: |
+          */target/*.jar
+          !*/target/*.original
+
+  upload:
+    needs: build
+    permissions: write-all
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        module: [ui, api]
     
-    - name: Upload API JAR to Release
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: jars
+    
+    - name: Upload ${{ matrix.module }} JAR to Release
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: api/target/${{ vars.REPO_NAME }}-api.jar
-        asset_name: ${{ vars.REPO_NAME }}-api-${{ github.event.release.name }}.jar
+        asset_path: ${{ matrix.module }}/target/${{ vars.REPO_NAME }}-${{ matrix.module }}.jar
+        asset_name: ${{ vars.REPO_NAME }}-${{ matrix.module }}-${{ github.event.release.name }}.jar
         asset_content_type: application/java-archive

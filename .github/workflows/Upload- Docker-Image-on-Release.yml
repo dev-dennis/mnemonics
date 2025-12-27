@@ -1,18 +1,17 @@
-name: Upload Docker Image on Release
+name: Upload Docker Images on Release
 
-# Workflow disabled - change to manual trigger only
-on: workflow_dispatch
-
-# Original trigger disabled (uncomment to re-enable):
-# on:
-#   release:
-#     types: [created]
+on:
+  release:
+    types: [created]
 
 jobs:
 
-  build:
+  build-and-push:
     permissions: write-all
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        module: [ui, api]
 
     steps:
       # Step 1: Checkout the repository
@@ -27,32 +26,32 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       # Step 3: Build the Docker image
-      - name: Build Docker image
-        run: docker build --file Dockerfile --tag ${{ vars.REPO_NAME }}-${{ github.event.release.name }}:latest .
+      - name: Build ${{ matrix.module }} Docker image
+        run: docker build --file Dockerfile.${{ matrix.module }} --tag ${{ vars.REPO_NAME }}-${{ matrix.module }}-${{ github.event.release.name }}:latest .
 
       # Step 4: Tag the Docker image with the repository name and version
-      - name: Tag Docker image
+      - name: Tag ${{ matrix.module }} Docker image
         run: |
-          docker tag ${{ vars.REPO_NAME }}-${{ github.event.release.name }}:latest ${{ secrets.DOCKER_USERNAME }}/${{ vars.REPO_NAME }}:latest
-          docker tag ${{ vars.REPO_NAME }}-${{ github.event.release.name }}:latest ${{ secrets.DOCKER_USERNAME }}/${{ vars.REPO_NAME }}:${{ github.event.release.name }}
+          docker tag ${{ vars.REPO_NAME }}-${{ matrix.module }}-${{ github.event.release.name }}:latest ${{ secrets.DOCKER_USERNAME }}/${{ vars.REPO_NAME }}-${{ matrix.module }}:latest
+          docker tag ${{ vars.REPO_NAME }}-${{ matrix.module }}-${{ github.event.release.name }}:latest ${{ secrets.DOCKER_USERNAME }}/${{ vars.REPO_NAME }}-${{ matrix.module }}:${{ github.event.release.name }}
 
       # Step 5: Push the Docker image to the repository
-      - name: Push Docker image
+      - name: Push ${{ matrix.module }} Docker image
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/${{ vars.REPO_NAME }}:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/${{ vars.REPO_NAME }}:${{ github.event.release.name }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ vars.REPO_NAME }}-${{ matrix.module }}:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ vars.REPO_NAME }}-${{ matrix.module }}:${{ github.event.release.name }}
 
       # Step 6: Save Docker image as a tarball
-      - name: Save Docker image as tarball
-        run: docker save ${{ vars.REPO_NAME }}-${{ github.event.release.name }}:latest -o ${{ vars.REPO_NAME }}-${{ github.event.release.name }}.tar
+      - name: Save ${{ matrix.module }} Docker image as tarball
+        run: docker save ${{ vars.REPO_NAME }}-${{ matrix.module }}-${{ github.event.release.name }}:latest -o ${{ vars.REPO_NAME }}-${{ matrix.module }}-${{ github.event.release.name }}.tar
 
       # Step 7: Upload Docker image tarball to release
-      - name: Upload Docker image to release
+      - name: Upload ${{ matrix.module }} Docker image to release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./${{ vars.REPO_NAME }}-${{ github.event.release.name }}.tar
-          asset_name: ${{ vars.REPO_NAME }}-${{ github.event.release.name }}.tar
+          asset_path: ./${{ vars.REPO_NAME }}-${{ matrix.module }}-${{ github.event.release.name }}.tar
+          asset_name: ${{ vars.REPO_NAME }}-${{ matrix.module }}-${{ github.event.release.name }}.tar
           asset_content_type: application/x-tar
