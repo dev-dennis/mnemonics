@@ -1,0 +1,34 @@
+name: Update Release Notes
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  update-release-description:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        module: [ui, api]
+    
+    steps:
+      - name: Add ${{ matrix.module }} Docker pull command to release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const release = await github.rest.repos.getRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: context.payload.release.id
+            });
+            
+            // begin content to be added
+            // end content to be added
+            
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: context.payload.release.id,
+              body: (release.data.body || '') + dockerInfo
+            });
