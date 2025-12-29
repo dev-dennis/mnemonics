@@ -23,8 +23,7 @@ jobs:
               release_id: context.payload.release.id
             });
             
-            // begin content to be added
-            // end content to be added
+            const dockerInfo = "\n\n**${{ matrix.module }}:**\n```bash\ndocker pull ${{ secrets.DOCKER_USERNAME }}/${{ vars.REPO_NAME }}-${{ matrix.module }}:${{ github.event.release.tag_name }}\n```\n";
             
             await github.rest.repos.updateRelease({
               owner: context.repo.owner,
