@@ -40,18 +40,3 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ vars.REPO_NAME }}-${{ matrix.module }}:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ vars.REPO_NAME }}-${{ matrix.module }}:${{ github.event.release.name }}
-
-      # Step 6: Save Docker image as a tarball
-      - name: Save ${{ matrix.module }} Docker image as tarball
-        run: docker save ${{ vars.REPO_NAME }}-${{ matrix.module }}-${{ github.event.release.name }}:latest -o ${{ vars.REPO_NAME }}-${{ matrix.module }}-${{ github.event.release.name }}.tar
-
-      # Step 7: Upload Docker image tarball to release
-      - name: Upload ${{ matrix.module }} Docker image to release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./${{ vars.REPO_NAME }}-${{ matrix.module }}-${{ github.event.release.name }}.tar
-          asset_name: ${{ vars.REPO_NAME }}-${{ matrix.module }}-${{ github.event.release.name }}.tar
-          asset_content_type: application/x-tar
